@@ -1,5 +1,5 @@
-# Camunda Workshop: Expecting the unexpecting
-Welcome to this Camunda Workshop. This workshop was designed as part of the Camundacon in New York 2020. Anyhow you should be able to follow the exercises without attending the workshop. The readme contains the exercise instruction. It should be easy to follow. In the other folders you find the model solutions as well as the full code solutions. The presentation from the workshop is provided as well.
+# Camunda Code Studio
+Welcome to Camunda's Code studio. Those exercises has been designed for an online course. Anyhow you should be able to follow the exercises without attending the online event. The readme contains the exercise instruction. It should be easy to follow. In the other folders you find the model solutions as well as the full code solutions. The presentation from the workshop is provided as well.
 
 
 To make that an even better learning experience Pull request are very welcome! 
@@ -251,80 +251,3 @@ In this workshop we won't take care of implementing the user task to select the 
 
 
 **:tada: Congrats now your process can be routed depending the data you get** 
-
-
-## Exercise 4: Handeling unexpected data
-:trophy: Goal of exercise number 4 is to understand how Camunda deals with problems due to missing data or wrong data. 
-
-
-Let's assume our EventDelegate will set the number variable to 0. Comment the line in your code: 
-> //numberEvents++;
-
-Restart your springboot application. What do you expect? Start your process. 
-
-
-Right now starting the process will throw an execption for the user that starts the process, because the expression at the gateway cannot be evaluated. In Cockpit is looks like that the instance never has been started. This is due to Camunda BPM transaction boundaries (which we have discussed in the workshop presentation). We can set those boundaries manually in order to handel missing data or failure of services better. 
-
-Set in the properties panel for the "Get NY event information task" an
-[x]asynchronous after 
-Run your application again and start a new process. Inspect Cockpit. Now we can see that we have an incident in our process. Here we can inspect the incidence. The incidents we produce here is not a failure of the service task. The incidents occures because the process gets data that can't be handeled.   
-
-
-:pencil2: Some expecting problems we would like to handle on the businessside. Therefore we can use the concept of BPMN errors. In our scenario we don't want an administrator to fix the problem, when the API will return 0 events. In those cases we don't want to reach the XOR gateway but through an error and let the user look for alternatives. Adjust your process model accordingly. 
-
-Now let's have a look into the code for the EventDelegate. Here we have to make sure that we throw the BPMN error as well. So we just set the variable number if it is bigger than 0. Otherwise we will throw the BPMN error. 
-
-
-```Java
-if (numberEvents > 0) {
-				  execution.setVariable("number", numberEvents);
-			  } else {
-				  throw new BpmnError("NoEventER");
-			  }
-```
-
-
-## Exercise 5: Add more flexibility to your process
-:trophy: Goal of exercise is to add more flexibility to your model and deal with roll back situation. 
-
-
-:pencil2: Our NY bucket list process is almost perfect. We just missed the fact that everyone has a good friend living in New York. Of course as soon as we would receive a message from our friend after we started the process we still want to go out with our friend and if we have booked any tickets yet, we want to make sure we canlce them. Adjust the model accordingly. 
-
-
-Set the technical attributes in the model. First we need to define a message for the start event in the event subprocess: 
-
-IMG
-
-Now decide on the compensate end event which tasks should be compensated
-
-IMG
-
-For the compensation task we need to choose an implementation as well. As we haven't booked anything we can here use the LoggerDelegate again. 
-
-IMG
-
-Finally uncomment: 
-> numberEvents++;
-
-Restart your application and start the process again. It should be running and should wait at the user task "Select galleries". Complete the task now it should wait at the task "Display events". 
-
-Let's send via REST call the invitation message. If you already have a Tool to send REST calls you can use it. Or you can get [Postman here](https://www.postman.com/). Now let's send a message to our Camunda Engine: 
-
-> POST http://localhost:8080/engine/message
-
-The body of the REST call should look like this
-
-```JSON
-{
-  "messageName": "invitationMSG",
-  "resultEnabled": "true",
-  "processVariables" : {
-    "invitationtext" : {"value" : "Hey let's meet today for lunch and explore the city afterwards together", "type": "String"}
-  }
-}
-```
-More detailed information on the message REST call can be found [here](https://docs.camunda.org/manual/latest/reference/rest/message/post-message/#example). Of course that is just a small part of [Camunda's REST API](https://docs.camunda.org/manual/latest/reference/rest/). Maybe you can use the docs to find out how to start an instance of your process via REST. 
-
-Back to our current running instance: 
-
-Finish the user task "Agree on meeting point" and observer your console and Cockpit. 
