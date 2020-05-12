@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_0n4w3et" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="3.6.0">
+  <bpmn:process id="NY-Bucketlist" name="New York Bucketlist" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1avfzg3" name="plans for NY needed">
+      <bpmn:outgoing>SequenceFlow_170pf8u</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:endEvent id="EndEvent_1fm13rq" name="NY bucket list created">
+      <bpmn:incoming>SequenceFlow_0811o9q</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="ServiceTask_0eebtps" name="Get NY event information" camunda:delegateExpression="#{eventDelegate}">
+      <bpmn:incoming>SequenceFlow_170pf8u</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0ocrgx9</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="UserTask_00jx403" name="Display events">
+      <bpmn:incoming>SequenceFlow_0m4ntgf</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0811o9q</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="ServiceTask_152rk0j" name="Book tickets" camunda:delegateExpression="#{loggerDelegate}">
+      <bpmn:incoming>SequenceFlow_0ocrgx9</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0m4ntgf</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="SequenceFlow_170pf8u" sourceRef="StartEvent_1avfzg3" targetRef="ServiceTask_0eebtps" />
+    <bpmn:sequenceFlow id="SequenceFlow_0811o9q" sourceRef="UserTask_00jx403" targetRef="EndEvent_1fm13rq" />
+    <bpmn:sequenceFlow id="SequenceFlow_0ocrgx9" sourceRef="ServiceTask_0eebtps" targetRef="ServiceTask_152rk0j" />
+    <bpmn:sequenceFlow id="SequenceFlow_0m4ntgf" sourceRef="ServiceTask_152rk0j" targetRef="UserTask_00jx403" />
+    <bpmn:textAnnotation id="TextAnnotation_170lpl8">
+      <bpmn:text>API: for art and events</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_06okpmg" sourceRef="ServiceTask_0eebtps" targetRef="TextAnnotation_170lpl8" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="NY-Bucketlist">
+      <bpmndi:BPMNShape id="StartEvent_1avfzg3_di" bpmnElement="StartEvent_1avfzg3">
+        <dc:Bounds x="172" y="222" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="159" y="265" width="62" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_1fm13rq_di" bpmnElement="EndEvent_1fm13rq">
+        <dc:Bounds x="705" y="222" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="690" y="265" width="68" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_0eebtps_di" bpmnElement="ServiceTask_0eebtps">
+        <dc:Bounds x="263" y="200" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="UserTask_00jx403_di" bpmnElement="UserTask_00jx403">
+        <dc:Bounds x="553" y="200" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_152rk0j_di" bpmnElement="ServiceTask_152rk0j">
+        <dc:Bounds x="403" y="200" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_170lpl8_di" bpmnElement="TextAnnotation_170lpl8">
+        <dc:Bounds x="263" y="110" width="100" height="40" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_170pf8u_di" bpmnElement="SequenceFlow_170pf8u">
+        <di:waypoint x="208" y="240" />
+        <di:waypoint x="263" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0811o9q_di" bpmnElement="SequenceFlow_0811o9q">
+        <di:waypoint x="653" y="240" />
+        <di:waypoint x="705" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0ocrgx9_di" bpmnElement="SequenceFlow_0ocrgx9">
+        <di:waypoint x="363" y="240" />
+        <di:waypoint x="403" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_06okpmg_di" bpmnElement="Association_06okpmg">
+        <di:waypoint x="305" y="200" />
+        <di:waypoint x="294" y="150" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0m4ntgf_di" bpmnElement="SequenceFlow_0m4ntgf">
+        <di:waypoint x="503" y="240" />
+        <di:waypoint x="553" y="240" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
